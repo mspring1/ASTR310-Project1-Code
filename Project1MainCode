@@ -1,0 +1,371 @@
+% % Project 1 code
+% % Part 1 : Importing the images 
+% 
+M74206 = rfits('190825.206');
+M74207 = rfits('190825.207');
+M74208 = rfits('190825.208');
+M74209 = rfits('190825.209');
+M74210 = rfits('190825.210');
+M74211 = rfits('190825.211');
+M74212 = rfits('190825.212');
+M74213 = rfits('190825.213');
+ 
+M77242 = rfits('190825.242');
+M77243 = rfits('190825.243');
+M77244 = rfits('190825.244');
+M77245 = rfits('190825.245');
+M77246 = rfits('190825.246');
+M77247 = rfits('190825.247');
+M77248 = rfits('190825.248');
+M77249 = rfits('190825.249');
+
+D269 = rfits('190824.269');
+D270 = rfits('190824.270');
+D271 = rfits('190824.271');
+D272 = rfits('190824.272');
+D273 = rfits('190824.273');
+D274 = rfits('190824.274');
+D275 = rfits('190824.275');
+D276 = rfits('190824.276');
+D277 = rfits('190824.277');
+D278 = rfits('190824.278');
+D279 = rfits('190824.279');
+ 
+VF298 = rfits('190824.298');
+VF299 = rfits('190824.299');
+VF300 = rfits('190824.300');
+VF301 = rfits('190824.301');
+VF302 = rfits('190824.302');
+VF303 = rfits('190824.303');
+VF304 = rfits('190824.304');
+VF305 = rfits('190824.305');
+VF306 = rfits('190824.306');
+ 
+BF307 = rfits('190824.307');
+BF308 = rfits('190824.308');
+BF309 = rfits('190824.309');
+BF310 = rfits('190824.310');
+BF311 = rfits('190824.311');
+BF312 = rfits('190824.312');
+BF313 = rfits('190824.313');
+BF314 = rfits('190824.314');
+BF315 = rfits('190824.315');
+ 
+B343 = rfits('190824.343');
+B344 = rfits('190824.344');
+B345 = rfits('190824.345');
+B346 = rfits('190824.346');
+B347 = rfits('190824.347');
+B348 = rfits('190824.348');
+B349 = rfits('190824.349');
+B350 = rfits('190824.350');
+B351 = rfits('190824.351');
+B352 = rfits('190824.352');
+B353 = rfits('190824.353');
+B354 = rfits('190824.354');
+B355 = rfits('190824.355');
+B356 = rfits('190824.356');
+B357 = rfits('190824.357');
+B358 = rfits('190824.358');
+B359 = rfits('190824.359');
+B360 = rfits('190824.360');
+B361 = rfits('190824.361');
+B362 = rfits('190824.362');
+
+
+% Part 2: make a master bias 
+ 
+D2 = cat(3,B343.data,B344.data,B345.data,B346.data,B347.data,B348.data,B349.data,B350.data,B351.data,B352.data,B353.data,B354.data,B355.data,B356.data,B357.data,B358.data,B359.data,B360.data,B361.data,B362.data);
+BiasMaster = median(D2,3);
+
+% Part 3: make a master dark
+ 
+D269B = D269.data - BiasMaster;
+D270B = D270.data - BiasMaster;
+D271B = D271.data - BiasMaster;
+D272B = D272.data - BiasMaster;
+D273B = D273.data - BiasMaster;
+D274B = D274.data - BiasMaster;
+D275B = D275.data - BiasMaster;
+D276B = D276.data - BiasMaster;
+D277B = D277.data - BiasMaster;
+D278B = D278.data - BiasMaster;
+D279B = D279.data - BiasMaster;
+
+D3 = cat(3,D269B,D270B,D271B,D272B,D273B,D274B,D275B,D276B,D277B,D278B,D279B);
+DarkMaster = median(D3,3);
+
+% Part 4: calibrating and making a master V flat
+ 
+dtime = 60; %in seconds
+ftime1 = 5.290989; %298 to 301
+ftime2 = 3.299571; %302 to 306
+ 
+VF298C = (VF298.data - (ftime1/dtime).* DarkMaster - BiasMaster);
+VF299C = (VF299.data - (ftime1/dtime).* DarkMaster - BiasMaster);
+VF300C = (VF300.data - (ftime1/dtime).* DarkMaster - BiasMaster);
+VF301C = (VF301.data - (ftime1/dtime).* DarkMaster - BiasMaster);
+VF302C = (VF302.data - (ftime2/dtime).* DarkMaster - BiasMaster);
+VF303C = (VF303.data - (ftime2/dtime).* DarkMaster - BiasMaster);
+VF304C = (VF304.data - (ftime2/dtime).* DarkMaster - BiasMaster);
+VF305C = (VF305.data - (ftime2/dtime).* DarkMaster - BiasMaster);
+VF306C = (VF306.data - (ftime2/dtime).* DarkMaster - BiasMaster);
+ 
+D4 = cat(3,VF298C,VF299C,VF300C,VF301C,VF302C,VF303C,VF304C,VF305C,VF306C);
+VFMaster = median(D4,3);
+VFMaster = VFMaster ./ mean(VFMaster, 'all');
+
+% Part 5: calibrating and making a master B flat 
+ 
+BF307C = (BF307.data - (2.235165/dtime).*DarkMaster - BiasMaster);
+BF308C = (BF308.data - (2.235165/dtime).*DarkMaster - BiasMaster);
+BF309C = (BF309.data - (2.235165/dtime).*DarkMaster - BiasMaster);
+BF310C = (BF310.data - (2.235165/dtime).*DarkMaster - BiasMaster);
+BF311C = (BF311.data - (2.235165/dtime).*DarkMaster - BiasMaster);
+BF312C = (BF312.data - (2/dtime).*DarkMaster - BiasMaster);
+BF313C = (BF313.data - (2/dtime).*DarkMaster - BiasMaster);
+BF314C = (BF314.data - (2/dtime).*DarkMaster - BiasMaster);
+BF315C = (BF315.data - (2/dtime).*DarkMaster - BiasMaster);
+
+D5 = cat(3,BF307C,BF308C,BF309C,BF310C,BF311C,BF312C,BF313C,BF314C,BF315C);
+BFMaster = median(D5,3);
+BFMaster = BFMaster ./ mean(BFMaster, 'all');
+
+% Part 6 : make a function to use the equation for calibration
+        % S*=(R - (tr/td)*D-B)/F
+
+% Part 7 : Calibrating images and combining them into a master image
+otime = 300; % in seconds
+dtime = 60; % in seconds
+
+% M74 B filters
+
+M74206C = calibrate(M74206.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+M74208C = calibrate(M74208.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+M74210C = calibrate(M74210.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+M74212C = calibrate(M74212.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+D6 = cat(3,M74206C,M74208C,M74210C,M74212C);
+M74BMaster = median(D6,3);
+
+% M74 V filters
+
+M74207C = calibrate(M74207.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+M74209C = calibrate(M74209.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+M74211C = calibrate(M74211.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+M74213C = calibrate(M74213.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+D7 = cat(3,M74207C,M74209C,M74211C,M74213C);
+M74VMaster = median(D7,3);
+
+% M77 B filters
+
+M77242C = calibrate(M77242.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+M77244C = calibrate(M77244.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+M77246C = calibrate(M77246.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+M77248C = calibrate(M77248.data, DarkMaster, BFMaster, BiasMaster, otime, dtime);
+D8 = cat(3,M77242C,M77244C,M77246C,M77248C);
+M77BMaster = median(D8,3);
+
+% M77 V filters
+
+M77243C = calibrate(M77243.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+M77245C = calibrate(M77245.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+M77247C = calibrate(M77247.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+M77249C = calibrate(M77249.data,DarkMaster,VFMaster,BiasMaster,otime,dtime);
+D9 = cat(3,M77243C,M77245C,M77247C,M77249C);
+M77VMaster = median(D9,3);
+
+M74BMaster=M74BMaster(60:2041, 20:2050);
+M74VMaster=M74VMaster(60:2041, 20:2050);
+M77BMaster=M77BMaster(60:2041, 20:2050);
+M77VMaster=M77VMaster(60:2041, 20:2050);
+
+figure(1)
+imagesc(BiasMaster,[1550, 1552])
+title("Master Bias");
+colorbar();
+
+figure(2)
+imagesc(DarkMaster,[0, 5])
+title("Master Dark");
+colorbar();
+
+figure(3)
+imagesc(BFMaster,[0.9, 1.1])
+title("Master B Flat");
+colorbar();
+
+figure(4)
+imagesc(VFMaster,[0.9, 1.1])
+title("Master V Flat");
+colorbar();
+
+map = [0 0 0.3
+    0.05 0.075 0.35
+    0.1 0.15 0.4
+    0.15 0.225 0.45
+    0.2 0.3 0.5
+    0.25 0.375 0.55
+    0.3 0.45 0.6
+    0.35 0.525 0.7
+    0.4 0.6 0.8
+    0.45 0.675 0.9
+    0.5 0.75 1.0];
+
+figure(5)
+[M74fluxB, error1] = aperE(M74BMaster,1023,997,470,570,565,638,608,702,0.741);
+imagesc(M74BMaster,[60, 150])
+title("Master B M74");
+colormap(map);
+colorbar();
+
+
+ figure(6)
+ imagesc(M74VMaster,[120, 200])
+ hold on
+ title("Master V M74");
+ colormap(map);
+ colorbar();
+ [M74fluxV, error2] = aperE(M74VMaster,1023,997,470,570,565,638,608,702,0.741);
+
+
+figure(7)
+imagesc(M77BMaster,[160, 450])
+title("Master B M77");
+colormap(map);
+colorbar();
+[M77fluxB, error3] = aperE(M77BMaster,979,1024,358,455,370,628,488,664,0.741);
+
+
+
+figure(8)
+[M77fluxV, error4] = aperE(M77VMaster,979,1024,358,455,370,628,488,664,0.741);
+imagesc(M77VMaster,[150, 500])
+title("Master V M77");
+colormap(map);
+colorbar();
+
+
+[ratioM74, uncert_ratioM74] = calculate_ratio(M74BMaster, M74VMaster);
+[ratioM77, uncert_ratioM77] = calculate_ratio(M77BMaster, M77VMaster);
+
+figure(9)
+imagesc(ratioM74,[0.4, 0.8])
+title("Ratios M74");
+colormap(map);
+colorbar();
+
+
+figure(10)
+imagesc(ratioM77,[0.4, 0.8])
+title("Ratios M77");
+colormap(map);
+colorbar();
+
+avgratioM74 = M74fluxB / M74fluxV;
+avgratioM77 = M77fluxB / M77fluxV;
+
+figure(11)
+imagesc(ratioM74,[0.61535, 0.61545])
+title("Ratios M74");
+colormap(map);
+colorbar();
+
+
+figure(12)
+imagesc(ratioM77,[0.58945, 0.58955])
+title("Ratios M77");
+colormap(map);
+colorbar();
+
+M74Vcircles = zeros(1,571);
+M74Verrcircles = zeros(1,571);
+for n=1:571
+    [M74Vcircles(n), M74Verrcircles(n)] = aperE(M74VMaster,1023,997,n,n,515,638,558,702,0.741);
+end
+M74Vcircles_shifted1 = M74Vcircles(1:570);
+M74Vcircles_shifted2 = M74Vcircles(2:571);
+M74Vrings = M74Vcircles_shifted2 - M74Vcircles_shifted1;
+
+M74Bcircles = zeros(1,571);
+M74Berrcircles = zeros(1,571);
+for n=1:571
+    [M74Bcircles(n), M74Berrcircles(n)] = aperE(M74BMaster,1023,997,n,n,515,638,558,702,0.741);
+end
+M74Bcircles_shifted1 = M74Bcircles(1:570);
+M74Bcircles_shifted2 = M74Bcircles(2:571);
+M74Brings = M74Bcircles_shifted2 - M74Bcircles_shifted1;
+
+M77Vcircles = zeros(1,456);
+M77Verrcircles = zeros(1,456);
+for n=1:456
+    [M77Vcircles(n), M77Verrcircles(n)] = aperE(M77VMaster,979,1024,n,n,370,628,488,664,0.741);
+end
+M77Vcircles_shifted1 = M77Vcircles(1:455);
+M77Vcircles_shifted2 = M77Vcircles(2:456);
+M77Vrings = M77Vcircles_shifted2 - M77Vcircles_shifted1;
+
+M77Bcircles = zeros(0,456);
+M77Berrcircles = zeros(0,456);
+for n=1:456
+    [M77Bcircles(n), M77Berrcircles(n)] = aperE(M77BMaster,979,1024,n,n,370,628,488,664,0.741);
+end
+M77Bcircles_shifted1 = M77Bcircles(1:455);
+M77Bcircles_shifted2 = M77Bcircles(2:456);
+M77Brings = M77Bcircles_shifted2 - M77Bcircles_shifted1;
+
+M74ring_ratios = M74Brings ./ M74Vrings;
+M77ring_ratios = M77Brings ./ M77Vrings;
+
+uncertavgratioM74 = (1/M74fluxV)*(sqrt((error1)^2 +((M74fluxB*error2)/M74fluxV)^2));
+uncertavgratioM77 = (1/M77fluxV)*(sqrt((error3)^2 +((M77fluxB*error4)/M77fluxV)^2));
+
+
+figure(13)
+plot(M74ring_ratios);
+title("M74 distance from center vs ratios");
+xlabel('distance from center of galaxy (pixels)');
+ylabel('B filter ADUs / V filter ADUs');
+hold on
+yline(avgratioM74);
+hold on
+yline(avgratioM74 + uncertavgratioM74, 'r');
+hold on
+yline(avgratioM74 - uncertavgratioM74, 'r');
+
+
+figure(14)
+plot(M77ring_ratios);
+title("M77 distance from center vs ratios");
+xlabel('distance from center of galaxy (pixels)');
+ylabel('B filter ADUs / V filter ADUs');
+hold on
+yline(avgratioM77);
+hold on
+yline(avgratioM77 + uncertavgratioM77, 'r');
+hold on
+yline(avgratioM77 - uncertavgratioM77, 'r');
+
+
+figure(15)
+plot(M74Brings);
+title("M74 distance from center vs B filter");
+xlabel('distance from center of galaxy (pixels)');
+ylabel('B filter ADUs');
+
+figure(16)
+plot(M74Vrings);
+title("M74 distance from center vs V filter");
+xlabel('distance from center of galaxy (pixels)');
+ylabel('V filter ADUs');
+
+figure(17)
+plot(M77Brings);
+title("M77 distance from center vs B filter");
+xlabel('distance from center of galaxy (pixels)');
+ylabel('B filter ADUs');
+
+figure(18)
+plot(M77Vrings);
+title("M77 distance from center vs V filter");
+xlabel('distance from center of galaxy (pixels)');
+ylabel('V filter ADUs');
