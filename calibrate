@@ -1,0 +1,7 @@
+function [CalibratedImage] = calibrate(original, dark, normalizedflat, bias, otime, dtime)
+%This function calibrates images using the equation seen in lecture (S*=(R -(tr/td)*D-B)/F). First,
+%we normalize the master flat image by dividing the array by its mean. Then,
+%using the aforementioned equation, we have all the elements to calibrate
+%our B and V images.
+CalibratedImage = (original - ((otime/dtime).*dark) - bias) ./ normalizedflat;
+end
