@@ -1,0 +1,8 @@
+function [ratio,uncertainty] = calculate_ratio(blue,visible)
+%calculate_ratio creates an 
+%   calculates the ratio of B filter to V filter ADUs and the uncertainty
+%   for each pixel
+ratio = blue./visible;
+uncertainty = (blue .* visible .* (blue + visible))./(visible.*visible.*visible.*visible);
+end
+
